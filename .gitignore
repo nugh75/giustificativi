@@ -1,0 +1,38 @@
+# Ambiente virtuale Python
+venv/
+env/
+.env
+
+# File di Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# File temporanei
+*.tmp
+temp/
+tmp/
+
+# Directory di output
+output/
+
+# Directory di test
+test/
+
+# File di configurazione con credenziali
+.env
+
+# File di sistema
+.DS_Store
+Thumbs.db
+
+# File di log
+*.log
+
+# File di cache di Streamlit
+.streamlit/
+
+# File binari e immagini temporanee
+assets/temp/
