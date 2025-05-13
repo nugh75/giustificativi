@@ -1,11 +1,11 @@
 # Generatore Attestati - Dipendenze
 # Generato: 12-05-2025
 
-streamlit==1.29.0
-pandas==2.1.0
-openpyxl==3.1.2
-reportlab==4.0.4
-pillow==10.0.0
-python-dotenv==1.0.0
-watchdog==2.3.1  # Per la ricarica automatica durante lo sviluppo
-xlrd==2.0.1  # Per il supporto ai file Excel più vecchi
+streamlit
+pandas
+openpyxl
+reportlab
+pillow
+python-dotenv
+watchdog  # Per la ricarica automatica durante lo sviluppo
+xlrd  # Per il supporto ai file Excel più vecchi
