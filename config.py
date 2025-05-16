@@ -54,6 +54,8 @@ SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
 SMTP_USERNAME = os.getenv("SMTP_USERNAME", "")
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
 SMTP_USE_TLS = True
+# Indirizzo email di risposta (Reply-To)
+SMTP_REPLY_TO = os.getenv("SMTP_REPLY_TO", "pef.presenze@uniroma3.it")
 
 # Configurazioni del Centro CAFIS
 DIRETTORE_CAFIS = os.getenv("DIRETTORE_CAFIS", "Prof. Mario Rossi")

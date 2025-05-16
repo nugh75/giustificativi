@@ -202,6 +202,12 @@ with st.sidebar:
             smtp_username = st.text_input("Email mittente", key="smtp_username")
             smtp_password = st.text_input("Password", type="password", key="smtp_password")
             
+            # Campo opzionale Reply-To
+            smtp_reply_to = st.text_input("Indirizzo email di risposta (Reply-To)", 
+                                          placeholder="Lascia vuoto per usare l'email mittente",
+                                          help="Specifica un indirizzo email diverso a cui ricevere le risposte (utile se l'email mittente è diversa da quella che usi per leggere le risposte)",
+                                          key="smtp_reply_to")
+            
             submit_smtp = st.form_submit_button("Salva configurazione")
             
             if submit_smtp:
@@ -218,13 +224,21 @@ with st.sidebar:
                     config.SMTP_PASSWORD = smtp_password
                     config.SMTP_USE_TLS = smtp_use_tls
                     
+                    # Gestisci l'indirizzo Reply-To
+                    if smtp_reply_to and smtp_reply_to.strip():
+                        config.SMTP_REPLY_TO = smtp_reply_to.strip()
+                    else:
+                        # Se non specificato, usa l'email mittente come Reply-To
+                        config.SMTP_REPLY_TO = smtp_username
+                    
                     # Salva le credenziali nel file .env
                     saved = save_smtp_credentials(
                         smtp_server, 
                         smtp_port, 
                         smtp_username, 
                         smtp_password, 
-                        smtp_use_tls
+                        smtp_use_tls,
+                        smtp_reply_to.strip() if smtp_reply_to and smtp_reply_to.strip() else None
                     )
                     
                     if saved:
@@ -235,7 +249,10 @@ with st.sidebar:
                     
                     st.rerun()
     else:
-        st.success(f"Email configurata: {config.SMTP_USERNAME} via {config.SMTP_SERVER}")
+        email_info = f"Email configurata: {config.SMTP_USERNAME} via {config.SMTP_SERVER}"
+        if hasattr(config, 'SMTP_REPLY_TO') and config.SMTP_REPLY_TO and config.SMTP_REPLY_TO != config.SMTP_USERNAME:
+            email_info += f"\nIndirizzo di risposta (Reply-To): {config.SMTP_REPLY_TO}"
+        st.success(email_info)
         if st.button("Modifica configurazione email", key="modifica_config_email_button"):
             st.session_state.smtp_configured = False
             st.rerun()

@@ -12,6 +12,7 @@ Applicazione Streamlit per generare attestati di presenza per attività didattic
 - Gestione intelligente degli invii email con blocchi personalizzabili
 - Sistema di registrazione errori per semplificare la risoluzione dei problemi
 - Interfaccia user-friendly per la configurazione e l'utilizzo
+- Supporto per la configurazione di indirizzi email di risposta personalizzati
 
 ## Requisiti
 
@@ -76,8 +77,18 @@ SMTP_SERVER=smtp.esempio.com
 SMTP_PORT=587
 SMTP_USERNAME=tua_email@esempio.com
 SMTP_PASSWORD=tua_password
+SMTP_REPLY_TO=email_risposta@esempio.com
 DIRETTORE_CAFIS=Nome del Direttore
 ```
+
+#### Configurazione di indirizzo Reply-To
+
+Se l'indirizzo email utilizzato per l'autenticazione SMTP (`SMTP_USERNAME`) è diverso dall'indirizzo al quale si desidera ricevere le risposte, è possibile configurare un indirizzo di risposta personalizzato utilizzando la variabile `SMTP_REPLY_TO`. Questo è particolarmente utile quando:
+
+- Si utilizza un indirizzo email di servizio configurato sul server Microsoft (es. `pef_presenze@os.uniroma3.it`)
+- Si desidera che le risposte vengano inviate a un indirizzo email più semplice da ricordare o più diffuso (es. `pef.presenze@uniroma3.it`)
+
+L'applicazione imposterà automaticamente l'header "Reply-To" nelle email inviate, in modo che quando i destinatari rispondono, la risposta venga inviata all'indirizzo corretto.
 
 ### Risorse grafiche
 

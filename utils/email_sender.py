@@ -77,6 +77,10 @@ def send_email(recipient_email, subject, body, attachment_path=None, retry_count
         message["Subject"] = subject
         message["Date"] = datetime.now().strftime("%a, %d %b %Y %H:%M:%S %z")
         
+        # Aggiungi il Reply-To header se configurato
+        if hasattr(config, 'SMTP_REPLY_TO') and config.SMTP_REPLY_TO:
+            message["Reply-To"] = config.SMTP_REPLY_TO
+        
         # Aggiungi il corpo del messaggio
         message.attach(MIMEText(body, "plain"))
         
