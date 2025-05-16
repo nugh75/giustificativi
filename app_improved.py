@@ -240,16 +240,30 @@ with st.sidebar:
             if smtp_use_ssl and smtp_port == 587:
                 smtp_port = 465
             
+            st.markdown("---")
+            st.markdown("### Configurazione degli indirizzi email")
+            
+            st.info("**Informazione sugli indirizzi email**\n\n"
+                   "Questo sistema permette di utilizzare due indirizzi email distinti:\n"
+                   "1. Un indirizzo per l'autenticazione sul server Microsoft\n"
+                   "2. Un indirizzo che i destinatari vedranno come 'Rispondi a'")
+            
             # Credenziali
-            smtp_username = st.text_input("Email mittente")
+            smtp_username = st.text_input("Email per autenticazione sul server", 
+                                         placeholder="es. pef_presenze@os.uniroma3.it",
+                                         help="Questo è l'indirizzo email configurato sul server Microsoft e usato per l'autenticazione")
             smtp_password = st.text_input("Password", type="password")
             
-            # Campo opzionale Reply-To
-            smtp_reply_to = st.text_input("Indirizzo email di risposta (Reply-To)", 
-                                          placeholder="Lascia vuoto per usare l'email mittente",
-                                          help="Specifica un indirizzo email diverso a cui ricevere le risposte (utile se l'email mittente è diversa da quella che usi per leggere le risposte)")
+            # Campo Reply-To con spiegazione migliorata
+            smtp_reply_to = st.text_input("Indirizzo email visibile ai destinatari (Reply-To)", 
+                                         placeholder="es. pef.presenze@uniroma3.it",
+                                         help="Questo è l'indirizzo email che i destinatari vedranno come indirizzo di risposta. Quando risponderanno alle email, le risposte arriveranno a questo indirizzo.")
+            
+            if smtp_username and not smtp_reply_to:
+                st.caption("Se non specifichi un indirizzo di risposta, verrà utilizzato lo stesso indirizzo di autenticazione.")
             
             # Pulsante di test connessione
+            st.markdown("---")
             test_connection = st.checkbox("Testa la connessione al server SMTP", value=False)
             
             submit_smtp = st.form_submit_button("Salva configurazione")
@@ -305,10 +319,42 @@ with st.sidebar:
                     
                     st.rerun()
     else:
-        email_info = f"Email configurata: {config.SMTP_USERNAME} via {config.SMTP_SERVER}"
-        if hasattr(config, 'SMTP_REPLY_TO') and config.SMTP_REPLY_TO and config.SMTP_REPLY_TO != config.SMTP_USERNAME:
-            email_info += f"\nIndirizzo di risposta (Reply-To): {config.SMTP_REPLY_TO}"
-        st.success(email_info)
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.info(f"**Configurazione del server email**\n\n"
+                   f"**Server SMTP:** {config.SMTP_SERVER}\n"
+                   f"**Porta:** {config.SMTP_PORT}\n"
+                   f"**Username:** {config.SMTP_USERNAME}")
+        
+        with col2:
+            visible_email = config.SMTP_REPLY_TO if hasattr(config, 'SMTP_REPLY_TO') and config.SMTP_REPLY_TO else config.SMTP_USERNAME
+            st.info(f"**Come appare agli utenti**\n\n"
+                   f"**Da:** {config.SMTP_USERNAME}\n"
+                   f"**Risposte inviate a:** {visible_email}")
+            
+        if st.button("ℹ️ Come funzionano le email nel sistema", help="Clicca per saperne di più"):
+            st.markdown("""
+            ### Indirizzi email nel sistema
+            
+            Il sistema utilizza due indirizzi email:
+            
+            1. **Indirizzo per autenticazione server** (`{}`): 
+               Questo indirizzo è configurato nel server Microsoft ed è utilizzato per l'autenticazione SMTP.
+            
+            2. **Indirizzo visibile per le risposte** (`{}`): 
+               Questo è l'indirizzo che riceverà le risposte quando i destinatari risponderanno alle email.
+            
+            Questa configurazione ti permette di utilizzare un indirizzo istituzionale per l'invio, ma ricevere le risposte
+            su un indirizzo più semplice da ricordare o più comunemente utilizzato.
+            """.format(
+                config.SMTP_USERNAME,
+                visible_email
+            ))
+            
+        if st.button("Modifica configurazione email"):
+            st.session_state.smtp_configured = False
+            st.rerun()
         if st.button("Modifica configurazione email"):
             st.session_state.smtp_configured = False
             st.rerun()
