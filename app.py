@@ -63,7 +63,8 @@ def process_attestato(row, logo_path, firma_path, send_mail=True):
     
     # Genera il PDF
     output_dir = create_temp_dir()
-    pdf_path = generate_pdf(pdf_data, logo_path, firma_path, output_dir)
+    # Usa sempre il modello in presenza per la versione base dell'app
+    pdf_path = generate_pdf(pdf_data, logo_path, firma_path, output_dir, "presenza")
     
     if pdf_path is None:
         return False, "Errore nella generazione del PDF"
@@ -706,7 +707,8 @@ with tab2:
                             
                             # Genera il PDF
                             output_dir = create_temp_dir()
-                            pdf_path = generate_pdf(pdf_data, logo_path, firma_path, output_dir)
+                            # Usa sempre il modello in presenza per la versione base dell'app
+                            pdf_path = generate_pdf(pdf_data, logo_path, firma_path, output_dir, "presenza")
                             
                             if pdf_path is None:
                                 st.error("Errore nella generazione del PDF")

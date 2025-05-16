@@ -1,7 +1,36 @@
 import os
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle
+from reportlab.platypus import SimpleDocTempl        # Formatta il testo del modello con i dati del certificato
+        # Aggiungi la data di rilascio (oggi) come data_rilascio
+        data_rilascio = datetime.now().strftime("%d/%m/%Y")
+        
+        # Gestisci il caso in cui classe_concorso sia "--" o vuoto
+        classe_concorso = data.get('classe_concorso', '')
+        if classe_concorso == '--' or not classe_concorso.strip():
+            classe_concorso = ""
+        
+        # Modifica il template in base alla presenza o assenza di classe_concorso
+        template_text = '\n'.join(linee_testo[2:])
+        if not classe_concorso:
+            # Sostituisci " – {classe_concorso}" con una stringa vuota
+            template_text = template_text.replace(" – {classe_concorso}", "")
+        
+        testo_formattato = template_text.format(
+            nome_cognome=data['nome_cognome'],
+            data=data['data'],
+            data_rilascio=data_rilascio,  # Data di rilascio (oggi)
+            ora_inizio=data['ora_inizio'],
+            ora_fine=data['ora_fine'],
+            aula=data.get('aula', ""),
+            dipartimento=data.get('dipartimento', ""),
+            indirizzo=data.get('indirizzo', ""),
+            tipo_lezione=data['tipo_lezione'],
+            tipo_percorso=percorso_selezionato,
+            classe_concorso=classe_concorso,
+            universita=config.UNIVERSITA,
+            direttore_cafis=config.DIRETTORE_CAFIS
+        )cer, Image, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import cm
 from reportlab.pdfbase import pdfmetrics
@@ -134,29 +163,11 @@ def generate_pdf(data, logo_path=None, firma_path=None, output_dir="output", mod
         if classe_concorso == '--' or not classe_concorso.strip():
             classe_concorso = ""
         
-        # Gestisci i campi opzionali aula, dipartimento e indirizzo
-        aula = data.get('aula', '')
-        dipartimento = data.get('dipartimento', '')
-        indirizzo = data.get('indirizzo', '')
-        
-        if aula == '--' or not aula.strip():
-            aula = ""
-        if dipartimento == '--' or not dipartimento.strip():
-            dipartimento = ""
-        if indirizzo == '--' or not indirizzo.strip():
-            indirizzo = ""
-            
-        # Modifica il template in base alla presenza o assenza di campi
+        # Modifica il template in base alla presenza o assenza di classe_concorso
         template_text = '\n'.join(linee_testo[2:])
-        
-        # Rimuovi classe_concorso se vuoto
         if not classe_concorso:
+            # Sostituisci " – {classe_concorso}" con una stringa vuota
             template_text = template_text.replace(" – {classe_concorso}", "")
-            
-        # Modifica il testo per lezioni in presenza quando dipartimento è vuoto
-        if modello == "presenza" and not dipartimento:
-            # Sostituisci "l'aula {aula} del dipartimento di {dipartimento}" con "l'aula {aula}"
-            template_text = template_text.replace("l'aula {aula} del dipartimento di {dipartimento}", "l'aula {aula}")
         
         testo_formattato = template_text.format(
             nome_cognome=data['nome_cognome'],
@@ -164,9 +175,9 @@ def generate_pdf(data, logo_path=None, firma_path=None, output_dir="output", mod
             data_rilascio=data_rilascio,  # Data di rilascio (oggi)
             ora_inizio=data['ora_inizio'],
             ora_fine=data['ora_fine'],
-            aula=aula,
-            dipartimento=dipartimento,
-            indirizzo=indirizzo,
+            aula=data.get('aula', ""),
+            dipartimento=data.get('dipartimento', ""),
+            indirizzo=data.get('indirizzo', ""),
             tipo_lezione=data['tipo_lezione'],
             tipo_percorso=percorso_selezionato,
             classe_concorso=classe_concorso,
@@ -184,35 +195,30 @@ def generate_pdf(data, logo_path=None, firma_path=None, output_dir="output", mod
         # Aggiungi la firma se disponibile
         if firma_path and os.path.exists(firma_path):
             try:
-                # Aggiungi spazio prima della firma
-                content.append(Spacer(1, 1*cm))
-                
-                # Ridimensiona la firma per adattarla alla pagina
+                # Usa PIL per ottenere l'aspect ratio corretto
                 pil_img = PILImage.open(firma_path)
                 img_width, img_height = pil_img.size
                 aspect_ratio = img_width / img_height
                 
-                # Imposta altezza firma a massimo 2 cm
                 firma = Image(firma_path)
-                firma.drawHeight = min(2*cm, firma.drawHeight)
+                # Riduci l'altezza della firma per evitare che vada nella seconda pagina
+                firma.drawHeight = 1.2*cm
                 firma.drawWidth = firma.drawHeight * aspect_ratio
                 
-                # Limita la larghezza massima a 5 cm
+                # Limita la larghezza massima
                 if firma.drawWidth > 5*cm:
                     firma.drawWidth = 5*cm
                     firma.drawHeight = firma.drawWidth / aspect_ratio
-                    
+                
                 content.append(firma)
             except Exception as e:
                 print(f"Errore nel caricamento della firma: {str(e)}")
         
-        # Genera il PDF
+        # Costruisci il documento
         doc.build(content)
         
         return file_path
         
     except Exception as e:
         print(f"Errore nella generazione del PDF: {str(e)}")
-        import traceback
-        traceback.print_exc()
         return None

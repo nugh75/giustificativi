@@ -22,8 +22,8 @@ def show_email_preview():
         st.warning("Per visualizzare l'anteprima email, configura prima le credenziali SMTP nella barra laterale.")
         return
     
-    # Determina l'indirizzo Reply-To effettivo
-    reply_to = config.SMTP_REPLY_TO if hasattr(config, "SMTP_REPLY_TO") and config.SMTP_REPLY_TO else config.SMTP_USERNAME
+    # Determina l'indirizzo pubblico che sarà visibile ai destinatari
+    visible_email = config.SMTP_REPLY_TO if hasattr(config, "SMTP_REPLY_TO") and config.SMTP_REPLY_TO else config.SMTP_USERNAME
     
     # Visualizza la struttura dell'email in due colonne
     col1, col2 = st.columns([2, 1])
@@ -52,7 +52,7 @@ def show_email_preview():
                 </div>
             </div>
             """.format(
-                from_email=config.SMTP_USERNAME,
+                from_email=visible_email,
                 subject=config.EMAIL_SUBJECT,
                 date=datetime.now().strftime("%a, %d %b %Y %H:%M:%S"),
                 body_content=config.EMAIL_BODY.format(
@@ -69,9 +69,9 @@ def show_email_preview():
     with col2:
         st.subheader("Intestazioni tecniche")
         st.info(f"""
-        **From:** {config.SMTP_USERNAME}
+        **From:** {visible_email}
         
-        **Reply-To:** {reply_to}
+        **Reply-To:** {visible_email}
         
         **Subject:** {config.EMAIL_SUBJECT}
         
@@ -82,8 +82,8 @@ def show_email_preview():
         **Content-Type:** multipart/mixed
         """)
         
-        if config.SMTP_USERNAME != reply_to:
-            st.success("✅ L'indirizzo di risposta (Reply-To) è stato personalizzato")
+        if config.SMTP_USERNAME != visible_email:
+            st.success("✅ L'indirizzo di risposta è stato personalizzato e diverso dall'indirizzo tecnico")
         
     # Sezione di spiegazione
     st.divider()
@@ -94,10 +94,10 @@ def show_email_preview():
     with explain_col1:
         st.markdown("#### Quando un destinatario riceve l'email")
         st.markdown(f"""
-        1. **Da:** {config.SMTP_USERNAME}
-          - Questo è l'indirizzo che appare come mittente dell'email
+        1. **Da:** {visible_email}
+          - Questo è l'indirizzo che appare come mittente dell'email (indirizzo pubblico)
         
-        2. **Rispondi-a:** {reply_to}
+        2. **Rispondi-a:** {visible_email}
           - Quando il destinatario clicca "Rispondi", la risposta sarà indirizzata a questo indirizzo
         
         3. **Comportamento client di posta**
@@ -109,13 +109,13 @@ def show_email_preview():
         st.markdown("#### Come funziona il sistema di email")
         st.markdown(f"""
         1. **Autenticazione sul server** tramite {config.SMTP_USERNAME}
-          - Il server SMTP accetta la connessione perché viene fornito un account valido
+          - Il server SMTP accetta la connessione perché viene fornito un account tecnico valido (indirizzo @os.uniroma3.it)
           
-        2. **Invio dell'email** mostrandosi come {config.SMTP_USERNAME}
-          - L'email viene inviata con l'intestazione "Da" impostata a questo indirizzo
+        2. **Invio dell'email** mostrandosi come {visible_email}
+          - L'email viene inviata con l'intestazione "Da" impostata all'indirizzo pubblico (@uniroma3.it)
           
-        3. **Configurazione Reply-To** impostata su {reply_to}
-          - L'intestazione speciale "Reply-To" indica ai client di posta di inviare le risposte a questo indirizzo invece che a quello mostrato nel campo "Da"
+        3. **Configurazione Reply-To** impostata su {visible_email}
+          - L'intestazione speciale "Reply-To" assicura che le risposte siano inviate all'indirizzo pubblico (@uniroma3.it)
         """)
     
     st.divider()
@@ -142,10 +142,10 @@ Questa è un'email di test inviata dall'applicazione "Generatore Attestati di Pr
 L'email è stata inviata con le seguenti configurazioni:
 - Server SMTP: {config.SMTP_SERVER}
 - Porta: {config.SMTP_PORT}
-- Indirizzo mittente: {config.SMTP_USERNAME}
-- Indirizzo per risposte: {reply_to}
+- Indirizzo tecnico di autenticazione: {config.SMTP_USERNAME} (non visibile ai destinatari)
+- Indirizzo pubblico visibile: {visible_email}
 
-Quando rispondi a questa email, la risposta verrà inviata all'indirizzo {reply_to}.
+Quando rispondi a questa email, la risposta verrà inviata all'indirizzo {visible_email}.
 
 Cordiali saluti,
 Centro CAFIS

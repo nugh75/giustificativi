@@ -12,6 +12,13 @@ except ImportError:
 except Exception as e:
     print(f"Errore nel caricamento del file .env: {str(e)}")
 
+# Carica i modelli di testo per gli attestati
+try:
+    from config_templates import *
+    print("Caricati modelli di testo per gli attestati")
+except ImportError:
+    print("File config_templates.py non trovato. Verranno usati modelli predefiniti.")
+
 # Configurazioni predefinite per provider di posta elettronica comuni
 EMAIL_PROVIDERS = {
     "gmail": {

@@ -83,9 +83,10 @@ def process_attestato(row, logo_path, firma_path, send_mail=True):
             'classe_concorso': row['classe_concorso']
         }
         
-        # Genera il PDF
+        # Genera il PDF con il modello selezionato
         output_dir = create_temp_dir()
-        pdf_path = generate_pdf(pdf_data, logo_path, firma_path, output_dir)
+        modello = st.session_state.get('attestato_modello', 'presenza')
+        pdf_path = generate_pdf(pdf_data, logo_path, firma_path, output_dir, modello)
         
         if pdf_path is None:
             error_msg = "Errore nella generazione del PDF"
@@ -179,6 +180,140 @@ with st.sidebar:
         st.session_state.firma = firma_path
         st.success("Firma caricata con successo!")
     
+    # Sezione per personalizzare l'attestato
+    st.subheader("Modello Attestato")
+    
+    # Inizializza la variabile di sessione per il modello se non esiste
+    if 'attestato_modello' not in st.session_state:
+        st.session_state.attestato_modello = "presenza"
+    
+    # Inizializza le variabili di sessione temporanee per tutti i modelli se non esistono
+    if not hasattr(config, 'ATTESTATO_PRESENZA_TEMP'):
+        config.ATTESTATO_PRESENZA_TEMP = config.ATTESTATO_PRESENZA
+    
+    if not hasattr(config, 'ATTESTATO_TELEMATICO_TEMP'):
+        config.ATTESTATO_TELEMATICO_TEMP = config.ATTESTATO_TELEMATICO
+        
+    if not hasattr(config, 'ATTESTATO_PERSONALIZZATO_TEMP'):
+        config.ATTESTATO_PERSONALIZZATO_TEMP = config.ATTESTATO_PERSONALIZZATO
+        
+    # Selettore per il tipo di modello
+    attestato_tipo = st.radio(
+        "Seleziona il tipo di attestato",
+        ["Lezione in presenza", "Lezione telematica", "Personalizzato"],
+        index=0 if st.session_state.attestato_modello == "presenza" else 
+              1 if st.session_state.attestato_modello == "telematico" else 2
+    )
+    
+    # Aggiorna la variabile di sessione in base alla selezione
+    if attestato_tipo == "Lezione in presenza":
+        st.session_state.attestato_modello = "presenza"
+    elif attestato_tipo == "Lezione telematica":
+        st.session_state.attestato_modello = "telematico"
+    else:
+        st.session_state.attestato_modello = "personalizzato"
+    
+    # Informazione sui segnaposti disponibili
+    st.info("Puoi utilizzare i seguenti segnaposti nel testo dell'attestato: {nome_cognome}, {data} (data della lezione), {data_rilascio} (data odierna di rilascio), {ora_inizio}, {ora_fine}, {aula}, {dipartimento}, {indirizzo}, {tipo_lezione}, {tipo_percorso}, {classe_concorso}, {universita}, {direttore_cafis}")
+    
+    # Aggiungi nota sulla differenza tra data lezione e data rilascio
+    st.caption("**Nota:** {data} rappresenta la data della lezione, mentre {data_rilascio} rappresenta la data odierna in cui viene emesso l'attestato.")
+    
+    # Gestione dei diversi modelli
+    if attestato_tipo == "Lezione in presenza":
+        with st.expander("Modifica modello per lezione in presenza", expanded=True):
+            # Area di testo per la personalizzazione
+            testo_presenza = st.text_area(
+                "Testo dell'attestato per lezioni in presenza",
+                value=config.ATTESTATO_PRESENZA_TEMP,
+                height=400
+            )
+            
+            # Aggiorna il valore quando cambia
+            if testo_presenza != config.ATTESTATO_PRESENZA_TEMP:
+                config.ATTESTATO_PRESENZA_TEMP = testo_presenza
+            
+            col1, col2 = st.columns(2)
+            # Pulsante per salvare il modello
+            if col1.button("Salva modello in presenza"):
+                config.ATTESTATO_PRESENZA = config.ATTESTATO_PRESENZA_TEMP
+                # Aggiorna anche il modello personalizzato se basato su questo
+                if config.ATTESTATO_PERSONALIZZATO == config.ATTESTATO_PRESENZA:
+                    config.ATTESTATO_PERSONALIZZATO = config.ATTESTATO_PRESENZA
+                    config.ATTESTATO_PERSONALIZZATO_TEMP = config.ATTESTATO_PRESENZA
+                st.success("Modello per lezioni in presenza salvato con successo!")
+                
+            # Pulsante per ripristinare il modello originale
+            if col2.button("Ripristina modello originale (presenza)"):
+                # Reimporta il modello originale dal file config_templates
+                from config_templates import ATTESTATO_PRESENZA as MODELLO_ORIGINALE
+                config.ATTESTATO_PRESENZA = MODELLO_ORIGINALE
+                config.ATTESTATO_PRESENZA_TEMP = MODELLO_ORIGINALE
+                st.success("Modello ripristinato alle impostazioni originali!")
+    
+    elif attestato_tipo == "Lezione telematica":
+        with st.expander("Modifica modello per lezione telematica", expanded=True):
+            # Area di testo per la personalizzazione
+            testo_telematico = st.text_area(
+                "Testo dell'attestato per lezioni telematiche",
+                value=config.ATTESTATO_TELEMATICO_TEMP,
+                height=400
+            )
+            
+            # Aggiorna il valore quando cambia
+            if testo_telematico != config.ATTESTATO_TELEMATICO_TEMP:
+                config.ATTESTATO_TELEMATICO_TEMP = testo_telematico
+            
+            col1, col2 = st.columns(2)
+            # Pulsante per salvare il modello
+            if col1.button("Salva modello telematico"):
+                config.ATTESTATO_TELEMATICO = config.ATTESTATO_TELEMATICO_TEMP
+                # Aggiorna anche il modello personalizzato se basato su questo
+                if config.ATTESTATO_PERSONALIZZATO == config.ATTESTATO_TELEMATICO:
+                    config.ATTESTATO_PERSONALIZZATO = config.ATTESTATO_TELEMATICO
+                    config.ATTESTATO_PERSONALIZZATO_TEMP = config.ATTESTATO_TELEMATICO
+                st.success("Modello per lezioni telematiche salvato con successo!")
+                
+            # Pulsante per ripristinare il modello originale
+            if col2.button("Ripristina modello originale (telematico)"):
+                # Reimporta il modello originale dal file config_templates
+                from config_templates import ATTESTATO_TELEMATICO as MODELLO_ORIGINALE
+                config.ATTESTATO_TELEMATICO = MODELLO_ORIGINALE
+                config.ATTESTATO_TELEMATICO_TEMP = MODELLO_ORIGINALE
+                st.success("Modello ripristinato alle impostazioni originali!")
+    
+    else:  # Personalizzato
+        with st.expander("Personalizza testo dell'attestato", expanded=True):
+            # Area di testo per la personalizzazione
+            testo_personalizzato = st.text_area(
+                "Testo dell'attestato personalizzato",
+                value=config.ATTESTATO_PERSONALIZZATO_TEMP,
+                height=400
+            )
+            
+            # Aggiorna il valore personalizzato quando cambia
+            if testo_personalizzato != config.ATTESTATO_PERSONALIZZATO_TEMP:
+                config.ATTESTATO_PERSONALIZZATO_TEMP = testo_personalizzato
+            
+            col1, col2, col3 = st.columns(3)
+            # Pulsante per salvare il modello personalizzato
+            if col1.button("Salva modello personalizzato"):
+                config.ATTESTATO_PERSONALIZZATO = config.ATTESTATO_PERSONALIZZATO_TEMP
+                st.success("Modello personalizzato salvato con successo!")
+                
+            # Pulsanti per ripristinare basati su modelli predefiniti
+            if col2.button("Usa modello in presenza"):
+                config.ATTESTATO_PERSONALIZZATO = config.ATTESTATO_PRESENZA
+                config.ATTESTATO_PERSONALIZZATO_TEMP = config.ATTESTATO_PRESENZA
+                st.success("Modello personalizzato impostato sul modello in presenza!")
+                st.rerun()
+                
+            if col3.button("Usa modello telematico"):
+                config.ATTESTATO_PERSONALIZZATO = config.ATTESTATO_TELEMATICO
+                config.ATTESTATO_PERSONALIZZATO_TEMP = config.ATTESTATO_TELEMATICO
+                st.success("Modello personalizzato impostato sul modello telematico!")
+                st.rerun()
+    
     # Sezione per configurare le credenziali SMTP
     st.subheader("Configurazione Email")
     if not st.session_state.smtp_configured:
@@ -243,21 +378,23 @@ with st.sidebar:
             st.markdown("---")
             st.markdown("### Configurazione degli indirizzi email")
             
-            st.info("**Informazione sugli indirizzi email**\n\n"
-                   "Questo sistema permette di utilizzare due indirizzi email distinti:\n"
-                   "1. Un indirizzo per l'autenticazione sul server Microsoft\n"
-                   "2. Un indirizzo che i destinatari vedranno come 'Rispondi a'")
+            st.info("**IMPORTANTE: Configurazione degli indirizzi email**\n\n"
+                   "Questo sistema utilizza due indirizzi email distinti:\n"
+                   "1. **Indirizzo tecnico** (@os.uniroma3.it): usato solo per l'autenticazione SMTP, mai visibile ai destinatari\n"
+                   "2. **Indirizzo pubblico** (@uniroma3.it): indirizzo che i destinatari vedranno come mittente delle email")
             
             # Credenziali
-            smtp_username = st.text_input("Email per autenticazione sul server", 
+            st.markdown("#### Configurazione Tecnica (Solo per Autenticazione)")
+            smtp_username = st.text_input("Email tecnica per autenticazione", 
                                          placeholder="es. pef_presenze@os.uniroma3.it",
-                                         help="Questo è l'indirizzo email configurato sul server Microsoft e usato per l'autenticazione")
-            smtp_password = st.text_input("Password", type="password")
+                                         help="Questo è l'indirizzo tecnico per l'autenticazione SMTP, non sarà mai visibile ai destinatari")
+            smtp_password = st.text_input("Password dell'email tecnica", type="password")
             
-            # Campo Reply-To con spiegazione migliorata
-            smtp_reply_to = st.text_input("Indirizzo email visibile ai destinatari (Reply-To)", 
+            # Campo per indirizzo pubblico
+            st.markdown("#### Configurazione Visibile (Mostrata ai Destinatari)")
+            smtp_reply_to = st.text_input("Indirizzo email pubblico", 
                                          placeholder="es. pef.presenze@uniroma3.it",
-                                         help="Questo è l'indirizzo email che i destinatari vedranno come indirizzo di risposta. Quando risponderanno alle email, le risposte arriveranno a questo indirizzo.")
+                                         help="Questo è l'indirizzo che sarà visibile ai destinatari come mittente delle email e dove riceverai le risposte.")
             
             if smtp_username and not smtp_reply_to:
                 st.caption("Se non specifichi un indirizzo di risposta, verrà utilizzato lo stesso indirizzo di autenticazione.")
@@ -325,36 +462,36 @@ with st.sidebar:
             st.info(f"**Configurazione del server email**\n\n"
                    f"**Server SMTP:** {config.SMTP_SERVER}\n"
                    f"**Porta:** {config.SMTP_PORT}\n"
-                   f"**Username:** {config.SMTP_USERNAME}")
+                   f"**Crittografia:** {'STARTTLS' if config.SMTP_USE_TLS else 'SSL/TLS' if hasattr(config, 'SMTP_USE_SSL') and config.SMTP_USE_SSL else 'Nessuna'}")
         
         with col2:
             visible_email = config.SMTP_REPLY_TO if hasattr(config, 'SMTP_REPLY_TO') and config.SMTP_REPLY_TO else config.SMTP_USERNAME
-            st.info(f"**Come appare agli utenti**\n\n"
-                   f"**Da:** {config.SMTP_USERNAME}\n"
-                   f"**Risposte inviate a:** {visible_email}")
+            st.info(f"**Configurazione indirizzi email**\n\n"
+                   f"**Indirizzo tecnico:** {config.SMTP_USERNAME}\n"
+                   f"**Indirizzo pubblico:** {visible_email}")
             
         if st.button("ℹ️ Come funzionano le email nel sistema", help="Clicca per saperne di più"):
             st.markdown("""
             ### Indirizzi email nel sistema
             
-            Il sistema utilizza due indirizzi email:
+            Il sistema utilizza due indirizzi email distinti:
             
-            1. **Indirizzo per autenticazione server** (`{}`): 
-               Questo indirizzo è configurato nel server Microsoft ed è utilizzato per l'autenticazione SMTP.
+            1. **Indirizzo tecnico** (`{}`): 
+               Questo indirizzo (@os.uniroma3.it) è configurato nel server Microsoft ed è utilizzato SOLO per l'autenticazione SMTP.
+               **Non sarà mai visibile ai destinatari delle email**.
             
-            2. **Indirizzo visibile per le risposte** (`{}`): 
-               Questo è l'indirizzo che riceverà le risposte quando i destinatari risponderanno alle email.
+            2. **Indirizzo pubblico** (`{}`): 
+               Questo è l'indirizzo (@uniroma3.it) che:
+               - Appare come mittente dell'email ai destinatari
+               - Riceve le risposte quando i destinatari risponderanno
             
-            Questa configurazione ti permette di utilizzare un indirizzo istituzionale per l'invio, ma ricevere le risposte
-            su un indirizzo più semplice da ricordare o più comunemente utilizzato.
+            Questa configurazione permette di mantenere la separazione tra l'identità tecnica dell'account di autenticazione
+            e l'identità pubblica visualizzata ai destinatari delle email.
             """.format(
                 config.SMTP_USERNAME,
                 visible_email
             ))
             
-        if st.button("Modifica configurazione email"):
-            st.session_state.smtp_configured = False
-            st.rerun()
         if st.button("Modifica configurazione email"):
             st.session_state.smtp_configured = False
             st.rerun()
@@ -719,9 +856,10 @@ Università degli Studi Roma Tre
                             logo_path = st.session_state.logo if st.session_state.logo else None
                             firma_path = st.session_state.firma if st.session_state.firma else None
                             
-                            # Genera il PDF
+                            # Genera il PDF con il modello selezionato
                             output_dir = create_temp_dir()
-                            pdf_path = generate_pdf(pdf_data, logo_path, firma_path, output_dir)
+                            modello = st.session_state.get('attestato_modello', 'presenza')
+                            pdf_path = generate_pdf(pdf_data, logo_path, firma_path, output_dir, modello)
                             
                             if pdf_path is None:
                                 st.error("Errore nella generazione del PDF")

@@ -72,12 +72,15 @@ def send_email(recipient_email, subject, body, attachment_path=None, retry_count
     try:
         # Crea il messaggio email
         message = MIMEMultipart()
-        message["From"] = config.SMTP_USERNAME
+        
+        # Usa l'indirizzo visibile (Reply-To) come campo From per i destinatari
+        visible_email = config.SMTP_REPLY_TO if hasattr(config, 'SMTP_REPLY_TO') and config.SMTP_REPLY_TO else config.SMTP_USERNAME
+        message["From"] = visible_email
         message["To"] = recipient_email
         message["Subject"] = subject
         message["Date"] = datetime.now().strftime("%a, %d %b %Y %H:%M:%S %z")
         
-        # Aggiungi il Reply-To header se configurato
+        # Aggiungi il Reply-To header se configurato (per sicurezza, ma dovrebbe essere uguale al From)
         if hasattr(config, 'SMTP_REPLY_TO') and config.SMTP_REPLY_TO:
             message["Reply-To"] = config.SMTP_REPLY_TO
         
