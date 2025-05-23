@@ -1,5 +1,5 @@
 nome_cognome,data,ora_inizio,ora_fine,aula,dipartimento,indirizzo,tipo_lezione,tipo_percorso,classe_concorso,email
 Mario Rossi,12/05/2025,14:00,16:00,A1,Scienze della Formazione,Via del Castro Pretorio 20,Didattica generale,PeF60 CFU,A-01,mario.rossi@esempio.com
-Giulia Bianchi,12/05/2025,16:00,18:00,A2,Scienze della Formazione,Via del Castro Pretorio 20,Pedagogia,PeF30 CFU,A-12,giulia.bianchi@esempio.com
+Giulia Bianchi,12/05/2025,16:00,18:00,A2,Scienze della Formazione,Via del Castro Pretorio 20,Pedagogia,PeF30 CFU all.2,A-12,giulia.bianchi@esempio.com
 Luca Verdi,13/05/2025,09:00,11:00,B1,Scienze della Formazione,Via del Castro Pretorio 20,Psicologia dell'educazione,PeF36 CFU,A-18,luca.verdi@esempio.com
 Anna Neri,13/05/2025,11:00,13:00,B2,Scienze della Formazione,Via del Castro Pretorio 20,Didattica inclusiva,PeF30 CFU (art. 13),A-25,anna.neri@esempio.com

@@ -113,10 +113,10 @@ def generate_pdf(data, logo_path=None, firma_path=None, output_dir="output", mod
         # Prepara il percorso completo
         percorsi_completi = {
             "PeF60 CFU": "PeF60 CFU (allegato 1 al DPCM 4 agosto 2023)",
-            "PeF30 CFU": "PeF30 CFU (allegato 2 al DPCM 4 agosto 2023)",
+            "PeF30 CFU all.2": "PeF30 CFU all.2 (allegato 2 al DPCM 4 agosto 2023)",
             "PeF36 CFU": "PeF36 CFU (allegato 5 al DPCM 4 agosto 2023)",
-            "PeF30 CFU (art. 13)": "PeF30 CFU (art. 13 del DPCM 4 agosto 2023)",
-            "PeF30 CFU art. 13": "PeF30 CFU (art. 13 del DPCM 4 agosto 2023)",
+            "PeF30 CFU (art. 13)": "PeF30 CFU all.2 (art. 13 del DPCM 4 agosto 2023)",
+            "PeF30 CFU all.2 art. 13": "PeF30 CFU all.2 (art. 13 del DPCM 4 agosto 2023)",
             "PeF36 CFU all.5": "PeF36 CFU (allegato 5 al DPCM 4 agosto 2023)",
             "PeF36 CFU (all.5)": "PeF36 CFU (allegato 5 al DPCM 4 agosto 2023)"
         }

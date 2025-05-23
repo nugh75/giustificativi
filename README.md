@@ -135,7 +135,7 @@ Il file Excel deve contenere le seguenti colonne:
 | dipartimento | Nome del dipartimento |
 | indirizzo | Indirizzo del dipartimento |
 | tipo_lezione | Tipo di lezione seguita |
-| tipo_percorso | Tipo di percorso (uno tra: "PeF60 CFU", "PeF30 CFU", "PeF36 CFU", "PeF30 CFU (art. 13)") |
+| tipo_percorso | Tipo di percorso (uno tra: "PeF60 CFU", "PeF30 CFU all.2", "PeF36 CFU", "PeF30 CFU (art. 13)") |
 | classe_concorso | Classe di concorso |
 | email | Indirizzo email del richiedente |
 

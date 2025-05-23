@@ -712,7 +712,7 @@ with tab1:
             | dipartimento | Nome del dipartimento | Scienze della Formazione |
             | indirizzo | Indirizzo del dipartimento | Via del Castro Pretorio 20 |
             | tipo_lezione | Tipo di lezione seguita | Didattica generale |
-            | tipo_percorso | Tipo di percorso | Uno tra: "PeF60 CFU", "PeF30 CFU", "PeF36 CFU", "PeF30 CFU (art. 13)" |
+            | tipo_percorso | Tipo di percorso | Uno tra: "PeF60 CFU", "PeF30 CFU all.2", "PeF36 CFU", "PeF30 CFU (art. 13)" |
             | classe_concorso | Classe di concorso | A-01 |
             | email | Indirizzo email del richiedente | mario.rossi@esempio.com |
             """)
@@ -754,7 +754,7 @@ Università degli Studi Roma Tre
         
         tipo_percorso_options = [
             "PeF60 CFU",
-            "PeF30 CFU",
+            "PeF30 CFU all.2",
             "PeF36 CFU", 
             "PeF30 CFU (art. 13)"
         ]
@@ -1018,7 +1018,7 @@ with tab4:
         
         1. **Colonne mancanti**: Assicurati che il file Excel contenga tutte le colonne richieste.
         2. **Formato data errato**: Le date devono essere nel formato GG/MM/AAAA (es. 15/05/2025).
-        3. **Percorso formativo non valido**: Il tipo di percorso deve essere uno tra: "PeF60 CFU", "PeF30 CFU", "PeF36 CFU", "PeF30 CFU (art. 13)".
+        3. **Percorso formativo non valido**: Il tipo di percorso deve essere uno tra: "PeF60 CFU", "PeF30 CFU all.2", "PeF36 CFU", "PeF30 CFU (art. 13)".
         4. **Email non valida**: L'indirizzo email deve essere nel formato corretto.
         
         **Soluzione**: Scarica uno dei template dalla sezione "Download Template" e usalo come base per i tuoi dati.

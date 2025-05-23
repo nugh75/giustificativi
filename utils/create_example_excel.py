@@ -59,7 +59,7 @@ def create_example_excel(output_path):
     # Tipi di percorso
     percorsi = [
         "PeF60 CFU",
-        "PeF30 CFU",
+        "PeF30 CFU all.2",
         "PeF36 CFU",
         "PeF30 CFU (art. 13)"
     ]

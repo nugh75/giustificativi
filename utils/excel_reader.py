@@ -108,10 +108,10 @@ def read_excel_file(file_path):
         # Verifica che i percorsi formativi siano validi
         valid_percorsi = [
             'PeF60 CFU', 
-            'PeF30 CFU', 
+            'PeF30 CFU all.2', 
             'PeF36 CFU', 
             'PeF30 CFU (art. 13)', 
-            'PeF30 CFU art. 13',  # Variante senza parentesi
+            'PeF30 CFU all.2 art. 13',  # Variante senza parentesi
             'PeF36 CFU all.5',    # Variante con allegato 5 in formato abbreviato
             'PeF36 CFU (all.5)'   # Variante con parentesi
         ]
@@ -268,10 +268,10 @@ def validate_excel_data(df):
     # Verifica percorsi formativi validi con normalizzazione
     valid_percorsi = [
         'PeF60 CFU', 
-        'PeF30 CFU', 
+        'PeF30 CFU all.2', 
         'PeF36 CFU', 
         'PeF30 CFU (art. 13)', 
-        'PeF30 CFU art. 13', 
+        'PeF30 CFU all.2 art. 13', 
         'PeF36 CFU all.5', 
         'PeF36 CFU (all.5)'
     ]

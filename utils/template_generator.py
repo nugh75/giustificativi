@@ -26,7 +26,7 @@ def create_template_excel(output_path, template_type='base', num_records=8):
             'dipartimento': ['Scienze della Formazione', 'Scienze della Formazione', 'Scienze della Formazione'],
             'indirizzo': ['Via del Castro Pretorio 20, Roma', 'Via del Castro Pretorio 20, Roma', 'Via del Castro Pretorio 20, Roma'],
             'tipo_lezione': ['Didattica generale', 'Pedagogia', 'Psicologia dell\'educazione'],
-            'tipo_percorso': ['PeF60 CFU', 'PeF30 CFU', 'PeF36 CFU'],
+            'tipo_percorso': ['PeF60 CFU', 'PeF30 CFU all.2', 'PeF36 CFU'],
             'classe_concorso': ['A-01', 'A-12', 'A-25'],
             'email': ['mario.rossi@esempio.com', 'anna.verdi@esempio.com', 'luca.bianchi@esempio.com']
         })
@@ -39,7 +39,7 @@ def create_template_excel(output_path, template_type='base', num_records=8):
         # Percorsi formativi disponibili
         percorsi = [
             "PeF60 CFU",
-            "PeF30 CFU",
+            "PeF30 CFU all.2",
             "PeF36 CFU",
             "PeF30 CFU (art. 13)"
         ]
@@ -148,7 +148,7 @@ def create_empty_template(output_path):
         'B1': 'Formato data: GG/MM/AAAA (es. 15/05/2025)',
         'C1': 'Formato ora: HH:MM (es. 09:00)',
         'D1': 'Formato ora: HH:MM (es. 11:00)',
-        'I1': 'Deve essere uno tra: "PeF60 CFU", "PeF30 CFU", "PeF36 CFU", "PeF30 CFU (art. 13)"',
+        'I1': 'Deve essere uno tra: "PeF60 CFU", "PeF30 CFU all.2", "PeF36 CFU", "PeF30 CFU (art. 13)"',
         'K1': 'Indirizzo email valido'
     }
     
