@@ -554,7 +554,7 @@ with tab1:
         - `dipartimento`: Nome del dipartimento
         - `indirizzo`: Indirizzo del dipartimento
         - `tipo_lezione`: Tipo di lezione seguita
-        - `tipo_percorso`: Tipo di percorso (uno tra: "PeF60 CFU", "PeF30 CFU all.2", "PeF36 CFU", "PeF30 CFU (art. 13)")
+        - `tipo_percorso`: Tipo di percorso (uno tra: "PeF 60", "PeF 30 all.2", "PeF 36", "PeF 30 art. 13")
         - `classe_concorso`: Classe di concorso
         - `email`: Indirizzo email del richiedente
         """)
@@ -602,10 +602,10 @@ with tab2:
         tipo_lezione_test = st.text_input("Tipo Lezione", value="Didattica generale", key="test_tipo_lezione")
         
         tipo_percorso_options = [
-            "PeF60 CFU",
-            "PeF30 CFU all.2",
-            "PeF36 CFU", 
-            "PeF30 CFU (art. 13)"
+            "PeF 60",
+            "PeF 30 all.2",
+            "PeF 36",
+            "PeF 30 art. 13"
         ]
         tipo_percorso_test = st.selectbox("Tipo Percorso", tipo_percorso_options, key="test_tipo_percorso")
         classe_concorso_test = st.text_input("Classe di Concorso", value="A-01", key="test_classe_concorso")
@@ -838,7 +838,7 @@ with tab3:
         | dipartimento | Nome del dipartimento | Scienze della Formazione |
         | indirizzo | Indirizzo del dipartimento | Via del Castro Pretorio 20, Roma |
         | tipo_lezione | Tipo di lezione seguita | Didattica generale |
-        | tipo_percorso | Tipo di percorso formativo | PeF60 CFU, PeF30 CFU all.2, PeF36 CFU o PeF30 CFU (art. 13) |
+        | tipo_percorso | Tipo di percorso formativo | PeF 60, PeF 30 all.2, PeF 36 o PeF 30 art. 13 |
         | classe_concorso | Classe di concorso | A-01 |
         | email | Indirizzo email del richiedente | mario.rossi@esempio.com |
         """)
@@ -860,7 +860,7 @@ with tab3:
         - `dipartimento`
         - `indirizzo`
         - `tipo_lezione`
-        - `tipo_percorso` (uno tra: "PeF60 CFU", "PeF30 CFU all.2", "PeF36 CFU", "PeF30 CFU (art. 13)")
+        - `tipo_percorso` (uno tra: "PeF 60", "PeF 30 all.2", "PeF 36", "PeF 30 art. 13")
         - `classe_concorso`
         - `email`
         """)
